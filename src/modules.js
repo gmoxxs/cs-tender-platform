@@ -10,6 +10,7 @@ const MODULES = [
  {id:'m3', no:3, name:'Project Coordinates', grp:'Project', kind:'coords'},
  {id:'m4', no:4, name:'Site Location', grp:'Project', kind:'location'},
  {id:'m5', no:5, name:'Documents', grp:'Project', kind:'docs'},
+ {id:'m5a', no:'5A', name:'Client Information Request', grp:'Project', kind:'cir'},
  {id:'m6', no:6, name:'C&S Tender Checklist', grp:'Project', kind:'checklist'},
  {id:'m7', no:7, name:'Site Assessment', grp:'Site & Survey', tech:true, calcs:[], custom:'site',
   ov:'Screening of site constraints (access, topography, hydrology, geotechnics, utilities, environment, land) with a weighted constraint rating that feeds the risk register and design basis.',

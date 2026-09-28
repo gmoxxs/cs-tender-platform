@@ -48,6 +48,7 @@ function parseVal(el){ if (el.dataset.bool) return el.checked; const v = el.valu
 document.addEventListener('change', e => {
   const el = e.target;
   if (el.dataset.cin){ const [cid, k] = el.dataset.cin.split('|'); const d = CALCS[cid].inputs.find(x => x.k === k); let v = el.value; if (!d.t || d.t === 'n'){ v = parseFloat(v); if (!isFinite(v)){ toast('Invalid number'); render(true); return; } } setInput(cid, k, v); commit(); return; }
+  if (el.dataset.circhk){ if (!can('registers')) return; const id = el.dataset.circhk; P.cir = P.cir || {}; (P.cir[id] = P.cir[id] || {}).status = el.checked ? 'Provided' : 'Not provided'; audit('CIR updated', `${id} → ${P.cir[id].status}`); commit(); return; }
   if (el.dataset.cconf){ const [cid, k] = el.dataset.cconf.split('|'); (P.conf[cid] = P.conf[cid] || {})[k] = el.value; audit('Confidence changed', `${CALCS[cid].no} · ${k} → ${el.value}`); commit(); return; }
   if (el.dataset.csrc){ const [cid, k] = el.dataset.csrc.split('|'); (P.src[cid] = P.src[cid] || {})[k] = el.value; audit('Source changed', `${CALCS[cid].no} · ${k}`); commit(); return; }
   if (el.dataset.rate){ if (!can('rates')) return; const v = parseFloat(el.value); P.rates[el.dataset.rate] = isFinite(v) ? v : BOQ_LIB[el.dataset.rate].rate; audit('Rate changed', `${el.dataset.rate} → ${P.rates[el.dataset.rate]}`); commit(); return; }
@@ -99,6 +100,9 @@ document.addEventListener('click', e => {
     case 'csvrecon': download('Tender_Reconciliation.csv', toCSV(['Item','Description','Required Qty','Tender Qty','Difference','Required Scope','Tender Scope','Tender Rate','Engineering Rate','Variance (RM)','Issues'], TENDER.rows.map(r => [r.key, r.desc, r.rq.toFixed(2), r.tq.toFixed(2), r.diff.toFixed(2), r.rscope, r.tscope, r.trate.toFixed(2), r.erate.toFixed(2), r.variance.toFixed(2), r.issues.join('; ')])), 'text/csv'); break;
     case 'gentender': if (!can('tender')) return; askConfirm('Replace the quotation with a regenerated demonstration quotation?', () => { closeModal(); P.tender = genSampleTender(); audit('Tender regenerated', 'demonstration'); commit(); }); break;
     case 'print': doPrint(P.repOpt); break;
+    case 'cirpdf': audit('CIR exported', 'PDF'); cirPrint(); break;
+    case 'cirxlsx': download(`${(P.info.number || 'Project').replace(/[^\w-]+/g, '_')}_Client_Information_Request.xlsx`, cirXlsx()); audit('CIR exported', 'xlsx'); break;
+    case 'cirreset': askConfirm('Reset the checklist to the standard list (statuses, responsibilities, actions and remarks will be cleared)?', () => { P.cir = {}; audit('CIR reset', ''); commit('Checklist reset'); }); break;
     case 'attpick': { if (!can('edit')) return; const inp = document.createElement('input'); inp.type = 'file'; inp.accept = a.dataset.accept || '*/*'; inp.multiple = a.dataset.kind !== 'cover'; const ch = a.dataset.chsel ? (document.getElementById('attsec') || {}).value : a.dataset.ch; const kind = a.dataset.kind || '';
       inp.style.display = 'none'; document.body.appendChild(inp); inp.onchange = () => { const fs = [...inp.files]; inp.remove(); if (fs.length) addFiles(fs, ch, kind); }; inp.click(); break; }
     case 'attdel': askConfirm('Remove this attachment from the report?', () => removeAttach(id)); break;

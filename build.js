@@ -1,6 +1,6 @@
 const fs = require('fs');
 const css = fs.readFileSync('src/styles.css', 'utf8');
-const js = ['core','data','calcs_a','calcs_b','engine','modules','ui','report','attach','pages','app'].map(f => `/* ---- ${f}.js ---- */\n` + fs.readFileSync(`src/${f}.js`, 'utf8')).join('\n');
+const js = ['core','data','calcs_a','calcs_b','engine','modules','ui','report','attach','pages','cir','app'].map(f => `/* ---- ${f}.js ---- */\n` + fs.readFileSync(`src/${f}.js`, 'utf8')).join('\n');
 const pdfMain = fs.existsSync('vendor/package/build/pdf.min.js') ? fs.readFileSync('vendor/package/build/pdf.min.js','utf8').replace(/<\/script/gi,'<\\/script') : '';
 const pdfWorker = fs.existsSync('vendor/package/build/pdf.worker.min.js') ? fs.readFileSync('vendor/package/build/pdf.worker.min.js','utf8').replace(/<\/script/gi,'<\\/script') : '';
 const html = `<!doctype html>
